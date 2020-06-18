@@ -109,9 +109,11 @@ def plot_tts(tau, my_mustar, utbl, my_r2, my_gf, my_t, mean_age, mode_age,
     ax0.tick_params(axis='both', labelsize=15)
     # add r^2 value text, position based on overplot number 
     if (overplot == 0):
-        yloc0 = height*0.6
+        #yloc0 = height*0.5
+        yloc0 = height*0.8
     else:
-        yloc0 = (height*0.6) - (overplot*height*0.1)
+       #yloc0 = (height*0.5) - (overplot*height*0.1)
+        yloc0 = (height*0.8) - (overplot*height*0.1)
     if (add_r2 == 1):
         rstr = title_str + r'$R^2$ = '+ str(round(my_r2, 2))
         ax0.annotate(rstr, xy=((width*1.13), yloc0), xycoords='figure pixels', 
@@ -133,7 +135,10 @@ def plot_tts(tau, my_mustar, utbl, my_r2, my_gf, my_t, mean_age, mode_age,
     else:
         yloc1 = (height*1.1) - (overplot*height*0.1)
     # add mean and mode 
-    mmstr = 'Mean = ' + str(int(round(mean_age, 0)))+', Mode = ' +str(int(round(mode_age, 0)))+' days'
+    if (mode_age == -999):
+        mmstr = 'Mean = ' + str(round(mean_age, 1))+', Mode = <1 day'
+    else: 
+        mmstr = 'Mean = ' + str(round(mean_age, 1))+', Mode = ' +str(round(mode_age, 1))+' days'
     if (add_meanmode == 1):   
         ax1.annotate(mmstr, xy=((width*2.27), yloc1), xycoords='figure pixels', 
                     horizontalalignment='right', color = my_color, size=15)

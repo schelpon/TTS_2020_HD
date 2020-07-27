@@ -1,14 +1,14 @@
-Author: Sofia Chelpon 07/27/2020
+### Author: Sofia Chelpon 07/27/2020
 
-TTS Read Me 
-All info regarding TTS work in this repository 
-Summary and instructions on how to use what is inside each directory 
-General notes needed to know to run 
+### TTS Read Me 
+### All info regarding TTS work in this repository 
+### Summary and instructions on how to use what is inside each directory 
+### General notes needed to know to run 
 
 ________________________________________________________________________________
-What you will find in each directory: 
+## What you will find in each directory: 
 
-/base_tts_code
+##### base_tts_code
 This is most important for you, this contains almost everything you should need to do the fits 
 
 	fitting.ipynb
@@ -28,7 +28,7 @@ This is most important for you, this contains almost everything you should need 
 	  /testing 
 		- code development, ignore this 
 
-/contrast_readin
+##### contrast_readin
 This is how the CONTRAST data is read in. Direct to whatever directory you have desired CONTRAST files in. ONLY have files you want to read in in that directory, as xarray’s open_mfdataset will read in everything in the folder. I move flights I do not want to read in (eg transit flights RF01, 02, 16) to a different folder. 
 
 	  awas 
@@ -58,7 +58,7 @@ This is how the CONTRAST data is read in. Direct to whatever directory you have 
 			- get info on avg UT temperature and speed 
 			- to estimate length of UT sample and get UT temperature for calculating lifetimes 
 	
-get_ratios
+##### get_ratios
 This takes the read in TOGA and AWAS data and adds relevant information to each data point (RF, some metadata for each flight). Data is partitioned into UT and BL for the whole campaign and for each RF individually and ratios are calculated. Species lifetime is added for each trace gas. Data is merged into one “master list” where TOGA and AWAS are now stored in the same dataframe. 
 
 There are several versions of the same code from different iterations/data treatments. First you want to run a version of DATA_PREP…, then that output gets read into GET_RATIOS… 
@@ -87,7 +87,7 @@ There are several versions of the same code from different iterations/data treat
 	get_ratios_twp_varOH.ipynb
 			- same as above but vary lifetimes according to bound of OH uncertainty 
 
-get_tts
+##### get_tts
 This folder is the bulk of the work for this project. Different iterations of ratios for which we determine a TTS. 
 Python module in base_tts_code is used to calculate TTS and do plotting. 
 
@@ -184,18 +184,18 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 			E.g. RF03 UT paired with RF03 BL to get ratio 
 			Not recommended 
 
-examine_ratios
+##### examine_ratios
 	- statistics on ratios and distributions for some key species, ut and bl concentration comparison, etc 
 	- nothing you really need unless youre interested in some of the chemical distributions 
 
-regional_plots
+##### regional_plots
 	- various map plots, flight footprint, vertical sampling altitudes 
 
-vertical_profiles 
+##### vertical_profiles 
 	- various vertical profiles for a few select trace gases 
 
 ________________________________________________________________________________
-Sample order of operations 
+## Sample order of operations 
 
 Start to finish, basic outputs for one RF or for CAMPAIGN AVERAGE: 
 1) contrast_readin - for both toga and awas, read in netcdfs 
@@ -204,7 +204,7 @@ Start to finish, basic outputs for one RF or for CAMPAIGN AVERAGE:
 
 
 ________________________________________________________________________________
-Notes 
+## Notes 
 
 - You can avoid the steps 1 and 2 by just using file:
 	/TTS_2020/get_ratios/contrast_ratios_two_awas_replace.pkl 

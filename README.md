@@ -7,7 +7,8 @@ General notes needed to know to run
 
 ________________________________________________________________________________
 What you will find in each directory: 
-base_tts_code
+
+/base_tts_code
 This is most important for you, this contains almost everything you should need to do the fits 
 
 	fitting.ipynb
@@ -24,10 +25,10 @@ This is most important for you, this contains almost everything you should need 
 		- get_tts —> iteratively test K values to find the minimum MSE fit for a set of ratios and lifetimes 
 		- plot_tts —> produces plots when given all info about ratios, mu*, tau, G(t), etc… can toggle what information you want to show or not show with inputs (e.g. add_meanmode = 1 prints mean and mode on figure, = 0 does not) 
 
-	  testing 
+	  /testing 
 		- code development, ignore this 
 
-contrast_readin
+/contrast_readin
 This is how the CONTRAST data is read in. Direct to whatever directory you have desired CONTRAST files in. ONLY have files you want to read in in that directory, as xarray’s open_mfdataset will read in everything in the folder. I move flights I do not want to read in (eg transit flights RF01, 02, 16) to a different folder. 
 
 	  awas 

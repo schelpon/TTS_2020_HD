@@ -5,7 +5,7 @@ All info regarding TTS work in this repository
 Summary and instructions on how to use what is inside each directory 
 General notes needed to know to run 
 
-___________________________________________________________________________________________________
+________________________________________________________________________________
 What you will find in each directory: 
 base_tts_code
 This is most important for you, this contains almost everything you should need to do the fits 
@@ -24,13 +24,13 @@ This is most important for you, this contains almost everything you should need 
 		- get_tts —> iteratively test K values to find the minimum MSE fit for a set of ratios and lifetimes 
 		- plot_tts —> produces plots when given all info about ratios, mu*, tau, G(t), etc… can toggle what information you want to show or not show with inputs (e.g. add_meanmode = 1 prints mean and mode on figure, = 0 does not) 
 
-	>>  testing 
+	  testing 
 		- code development, ignore this 
 
 contrast_readin
 This is how the CONTRAST data is read in. Direct to whatever directory you have desired CONTRAST files in. ONLY have files you want to read in in that directory, as xarray’s open_mfdataset will read in everything in the folder. I move flights I do not want to read in (eg transit flights RF01, 02, 16) to a different folder. 
 
-	>>  awas 
+	  awas 
 		awas_readin_UTC.ipynb
 			- read in all awas data from desired flights 
 			- choose selected trace gases 
@@ -40,7 +40,7 @@ This is how the CONTRAST data is read in. Direct to whatever directory you have 
 			- remove all data immediately surrounding Guam 
 			- add info on each flight & parameters (eg altitude, latitude, UTC time …) 
 			- save to netcdf 
-	>>  toga_lodhalf 
+	  toga_lodhalf 
 		ignore subdirectories, for development 
 		toga_readin_lodhalf_noguam_UTC.ipynb
 			- read in all awas data from desired flights 
@@ -90,10 +90,10 @@ get_tts
 This folder is the bulk of the work for this project. Different iterations of ratios for which we determine a TTS. 
 Python module in base_tts_code is used to calculate TTS and do plotting. 
 
-	>> figures 
+	 figures 
 		- repo to save all figures in 
 
-	>>  tts_per_rf
+	  tts_per_rf
 		get_ratios_twp.ipynb
 			- read in ratio data that saved mean per RF in the UT 
 			- use campaign average BL to get ratios per RF 
@@ -101,10 +101,10 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 			- read in outputs from get_ratios_twp 
 			- get G(t) and and plot mu*-tau and G(t) for each RF 
 		
-	>>  tts_rf07 
+	  tts_rf07 
 		- close look at RF07, how does campaign average BL vs. RF07 BL affect ratios and results 
 
-	>>  tts_vary_bl 
+	  tts_vary_bl 
 		fulldomain_bltau
 			- vary bl height and see impact 
 			- examine some individual flights closely (RF11, RF08, RF06)
@@ -119,7 +119,7 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 			tts_vary_bl_varybl.ipynb
 				- get G(t) and and plot mu*-tau and G(t) for each version 
 
-	>> tts_vary_tau
+	 tts_vary_tau
 		tts_vary_tau.ipynb
 			- get tts for campaign average UT and BL but with different lifetimes 
 			- do not use <LOD correction for AWAS data
@@ -141,7 +141,7 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 			- use only data 0-25 N 
 			- vary lifetime based on different OH values 
 
-	>> tts_vary_ut 
+	 tts_vary_ut 
 	My code gets confusing here, be warned. To do a fit for each segment for the whole campaign, the processing is a little hefty so I actually run this on modeling2 then transfer the results back to my local drive for plotting and playing with results. 
 
 		get_tts_vary_ut_segments_total.ipynb
@@ -150,7 +150,7 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 			- each column in he data frame is one segment, with a ratio value for each trace gas 
 			- get_tts for each column then save all outputs to access for plotting later 
 
-		>>> data_prep 
+		 data_prep 
 			data_prep_ut_segments.ipynb
 				- find all awas data in the UT, get the times of canister collection 
 				- each awas can = 1 segment/sample 
@@ -162,13 +162,13 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 				- save tracer name ordering for each segment, you’ll need it later
 				- ordering will vary for each one because not all species are measured every segment. 
 
-		>>> MD2_outputs
+		 MD2_outputs
 			Outputs from modeling2, used for plotting in directories below “plots_for_….” 
 
-		>>> plots_for_campavgbl_bltau_fulldomain 
-		>>> plots_for_campavgbl_bltau_twp 
-		>>> plots_for_campavgbl_tropotau_twp 
-		>>> plots_for_campavgbl_tropotau_twp_awas_replace
+		 plots_for_campavgbl_bltau_fulldomain 
+		 plots_for_campavgbl_bltau_twp 
+		 plots_for_campavgbl_tropotau_twp 
+		 plots_for_campavgbl_tropotau_twp_awas_replace
 			plot_tts_vary_ut_segments.ipynb
 				- read in output from modeling2
 				- plot each segment mu*-tau and TTS in gray 
@@ -178,7 +178,7 @@ Python module in base_tts_code is used to calculate TTS and do plotting.
 			plot_tts_vary_ut_segments.ipynb
 				- read in output from modeling2
 				- choose particular segments and plot them over all segments 
-		>>> sameflightbl 
+		 sameflightbl 
 			Same as above but use same flight BL rather than campaign average BL 
 			E.g. RF03 UT paired with RF03 BL to get ratio 
 			Not recommended 
@@ -193,7 +193,7 @@ regional_plots
 vertical_profiles 
 	- various vertical profiles for a few select trace gases 
 
-___________________________________________________________________________________________________
+________________________________________________________________________________
 Sample order of operations 
 
 Start to finish, basic outputs for one RF or for CAMPAIGN AVERAGE: 
@@ -202,7 +202,7 @@ Start to finish, basic outputs for one RF or for CAMPAIGN AVERAGE:
 3) get_tts - for whatever combination of lifetime and ratio you want to use (pick appropriate columns from master list) 
 
 
-___________________________________________________________________________________________________
+________________________________________________________________________________
 Notes 
 
 - You can avoid the steps 1 and 2 by just using file:

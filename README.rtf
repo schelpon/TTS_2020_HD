@@ -1,0 +1,273 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2512
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;\f2\fswiss\fcharset0 Helvetica-Oblique;
+}
+{\colortbl;\red255\green255\blue255;\red147\green139\blue5;\red255\green255\blue11;\red21\green93\blue255;
+\red0\green0\blue0;\red252\green9\blue7;\red27\green128\blue255;\red62\green166\blue255;\red251\green0\blue7;
+}
+{\*\expandedcolortbl;;\cssrgb\c64268\c60430\c0;\cssrgb\c100000\c100000\c0;\cssrgb\c8872\c47049\c100000;
+\cssrgb\c0\c0\c0;\cssrgb\c100000\c15764\c0;\cssrgb\c11095\c58865\c100000;\cssrgb\c29136\c71589\c100000;\cssrgb\c100000\c12195\c0;
+}
+\margl1440\margr1440\vieww13380\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs28 \cf2 Author: Sofia Chelpon 07/27/2020\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b0 \cf2 TTS Read Me \
+All info regarding TTS work in this repository \
+Summary and instructions on how to use what is inside each directory \
+General notes needed to know to run 
+\f0\b \cf2 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs24 \cf3 ___________________________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs28 \cf2 What you will find in each directory: \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs26 \cf4 base_tts_code\
+
+\f2\i\b0\fs24 \cf5 This is most important for you, this contains almost everything you should need to do the fits \
+
+\f1\i0 \cf4 \
+\cf0 	\cf6 fitting.ipynb\cf0 \
+		- start to finish process for using ratio data and lifetimes to fit a mu*-tau relationship \
+		- note you want the lifetimes/ratios to be in ascending order arranged by lifetime & remove all nan \
+		- fit relies on iteratively finding the minimum MSE and stopping when the MSE stops improving \
+		- shows code for plotting mu*-tau best fit and G(t) \
+\
+	\cf6 tts_mod.py\cf0 \
+		- this is a module that packages together all the tts functions used \
+		- essentially makes what I do in fitting.ipynb callable \
+		- prep_for_tts \'97> feed it your lifetimes in ascending order, and it will return the timescale for G(t), the exponential decay matrix needed to get the G(t), and lifetimes in seconds \
+		- my_greens_func \'97> solve analytical solution for Greens Function for a given K\
+		- get_tts \'97> iteratively test K values to find the minimum MSE fit for a set of ratios and lifetimes \
+		- plot_tts \'97> produces plots when given all info about ratios, mu*, tau, G(t), etc\'85 can toggle what information you want to show or not show with inputs (e.g. add_meanmode = 1 prints mean and mode on figure, = 0 does not) \
+\
+	\cf4 >>  \cf7 testing \cf0 \
+		- code development, ignore this \
+\
+
+\f0\b\fs26 \cf4 contrast_readin\
+
+\f2\i\b0\fs24 \cf0 This is how the CONTRAST data is read in. Direct to whatever directory you have desired CONTRAST files in. ONLY have files you want to read in in that directory, as xarray\'92s open_mfdataset will read in everything in the folder. I move flights I do not want to read in (eg transit flights RF01, 02, 16) to a different folder. \
+
+\f1\i0 \
+	\cf4 >>  \cf7 awas \
+		\cf6 awas_readin_UTC.ipynb\cf7 \
+\cf0 			- read in all awas data from desired flights \
+			- choose selected trace gases \
+			- confine to study area (0-25 N) \
+			- save 2 versions - one with and one without <LOD correction (fill values to ~1/2 estimated LOD) \
+			- add species lifetimes \
+			- remove all data immediately surrounding Guam \
+			- add info on each flight & parameters (eg altitude, latitude, UTC time \'85) \
+			- save to netcdf \
+	\cf4 >>  \cf7 toga_lodhalf \
+		ignore subdirectories, for development \
+		\cf6 toga_readin_lodhalf_noguam_UTC.ipynb\cf7 \
+\cf0 			- read in all awas data from desired flights \
+			- choose selected trace gases \
+			- confine to study area (0-25 N) \
+			- do <LOD correction and fill values to ~1/2 estimated LOD \
+			- add species lifetimes from xlsx file \
+			- remove all data immediately surrounding Guam \
+			- add info on each flight & parameters (eg altitude, latitude, \'85) \
+			- save to netcdf \
+\cf7 		\cf6 examine_flight_times.ipynb\
+\cf0 			- get info on flight start/stop times so we can label each data point with an RF later \cf6 \
+		get_ut_flight_speed_temp.ipynb \
+\cf0 			- get info on avg UT temperature and speed \
+			- to estimate length of UT sample and get UT temperature for calculating lifetimes \
+	\
+
+\f0\b\fs26 \cf4 get_ratios\
+
+\f2\i\b0\fs24 \cf5 This takes the read in TOGA and AWAS data and adds relevant information to each data point (RF, some metadata for each flight). Data is partitioned into UT and BL for the whole campaign and for each RF individually and ratios are calculated. Species lifetime is added for each trace gas. Data is merged into one \'93master list\'94 where TOGA and AWAS are now stored in the same dataframe. \
+\
+There are several versions of the same code from different iterations/data treatments. First you want to run a version of DATA_PREP\'85, then that output gets read into GET_RATIOS\'85 
+\f1\i0 \
+\
+	\cf6 data_prep.ipynb\
+\cf0 			- uses UTC to tag each data point with the corresponding RF and add some metadata \
+			- toga and awas done separately \
+			- awas version WITHOUT <LOD correction \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 	\cf6 data_prep_awas_fills.ipynb\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 			- uses UTC to tag each data point with the corresponding RF and add some metadata \
+			- toga and awas done separately \
+			- awas version WITH <LOD correction \
+			\cf6 \
+	get_ratios_twp.ipynb\
+\cf0 			- separate data into the UT and BL sections\
+			- get means for each flight and altitude grouping (e.g. UT for RF03 for each trace gas) \
+			- save means \
+			- use means to get ratios for all trace gases for each RF individually, as well as the campaign average \
+			- add lifetimes to that data frame \
+			- combine toga and awas into one \'93master list\'94 pickle and save that \
+\
+\cf6 	get_ratios_twp.ipynb\
+\cf0 			- same as above but use awas version with <LOD correction \
+\
+\cf6 	get_ratios_twp_varOH.ipynb\
+\cf0 			- same as above but vary lifetimes according to bound of OH uncertainty \
+\
+
+\f0\b\fs26 \cf4 get_tts\
+
+\f2\i\b0\fs24 \cf5 This folder is the bulk of the work for this project. Different iterations of ratios for which we determine a TTS. \
+Python module in base_tts_code is used to calculate TTS and do plotting. \
+
+\f1\i0 \cf4 \
+\cf0 	\cf4 >> \cf7 figures\cf0  \
+		- repo to save all figures in \
+\
+	\cf4 >>  \cf7 tts_per_rf\cf0 \
+\cf6 		get_ratios_twp.ipynb\
+\cf0 			- read in ratio data that saved mean per RF in the UT \
+			- use campaign average BL to get ratios per RF \
+\cf6 		get_ratios_twp.ipynb \
+\cf0 			- read in outputs from get_ratios_twp \
+			- get G(t) and and plot mu*-tau and G(t) for each RF \
+		\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf8 	\cf4 >>  \cf7 tts_rf07 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 		- close look at RF07, how does campaign average BL vs. RF07 BL affect ratios and results \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf7 \
+	\cf4 >>  \cf7 tts_vary_bl \
+		fulldomain_bltau\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 			- vary bl height and see impact \
+			- examine some individual flights closely (RF11, RF08, RF06)\
+			- look at shear line \
+			- vary BL temporally and regionally \cf7 \
+		twp_bltau\
+\cf5 			- same as above but only use data 0-25 N \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf7 		twp_tropotau_varyregion\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf9 			get_ratios_varyregion.ipynb\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 				- see what happens when we compute ratios for BL = 0-10 N vs. BL = 0-25 N \
+				- does changing BL from TWP focus vs. general tropics focus impact results?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf9 			tts_vary_bl_varybl.ipynb\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 				- get G(t) and and plot mu*-tau and G(t) for each version \
+\cf7 \
+	\cf4 >> \cf7 tts_vary_tau\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 		\cf6 tts_vary_tau.ipynb\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 			- get tts for campaign average UT and BL but with different lifetimes \
+			- do not use <LOD correction for AWAS data\
+			- use all data north of equator \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 		\cf6 tts_vary_tau_twp.ipynb\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 			- get tts for campaign average UT and BL but with different lifetimes \
+			- do not use <LOD correction for AWAS data\
+			- use only data 0-25 N \
+			\cf6 \
+		tts_vary_tau_twp_awas_replace.ipynb\
+\cf0 			- get tts for campaign average UT and BL but with different lifetimes \
+			- use <LOD correction for AWAS data\
+			- use only data 0-25 N \
+\
+\cf6 		tts_vary_tau_twp_OHvar.ipynb\
+\cf0 			- get tts for campaign average UT and BL but with different lifetimes \
+			- do not use <LOD correction for AWAS data\
+			- use only data 0-25 N \
+			- vary lifetime based on different OH values \
+\
+\cf7 	\cf4 >> \cf7 tts_vary_ut \
+	
+\f2\i \cf5 My code gets confusing here, be warned. To do a fit for each segment for the whole campaign, the processing is a little hefty so I actually run this on modeling2 then transfer the results back to my local drive for plotting and playing with results. 
+\f1\i0 \cf7 \
+\cf6 \
+		get_tts_vary_ut_segments_total.ipynb\cf7 \
+			\cf5 - code that gets run on modeling2 because too hefty for me to run locally \
+			- grab the files I made in /data_prep/ (below) and use them to get the tts for each segment \
+			- each column in he data frame is one segment, with a ratio value for each trace gas \
+			- get_tts for each column then save all outputs to access for plotting later \
+\cf7 \
+		>>> data_prep \
+\cf6 			data_prep_ut_segments.ipynb\cf7 \
+				\cf5 - find all awas data in the UT, get the times of canister collection \
+				- each awas can = 1 segment/sample \
+				- co-locate toga data within +/- 3 minutes of awas canister \
+\
+\cf6 			get_ratios_ut_segments.ipynb\cf7 \
+				\cf5 - use segment data to get ratios for each sample for toga and awas \
+				- add lifetimes, combine to a master list to be used for input into \'93get_tts\'94 \
+				- save tracer name ordering for each segment, you\'92ll need it later\
+				- ordering will vary for each one because not all species are measured every segment. \
+\cf7 \
+		>>> MD2_outputs\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 			Outputs from modeling2, used for plotting in directories below \'93plots_for_\'85.\'94 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf7 		>>> plots_for_campavgbl_bltau_fulldomain \
+		>>> plots_for_campavgbl_bltau_twp \
+		>>> plots_for_campavgbl_tropotau_twp \
+		>>> plots_for_campavgbl_tropotau_twp_awas_replace\
+\cf6 			plot_tts_vary_ut_segments.ipynb\cf7 \
+				\cf5 - read in output from modeling2\
+				- plot each segment mu*-tau and TTS in gray \
+				- isolate extremes (min, max modes) 		\
+				- get average of all segments for segment average (black) \
+				- plot box plot to show distribution of means and modes \
+\cf6 			plot_tts_vary_ut_segments.ipynb\cf7 \
+				\cf5 - read in output from modeling2\
+				- choose particular segments and plot them over all segments \cf7 \
+		>>> sameflightbl \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 			Same as above but use same flight BL rather than campaign average BL \
+			E.g. RF03 UT paired with RF03 BL to get ratio \
+			Not recommended \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs26 \cf4 examine_ratios\
+
+\f1\b0\fs24 \cf0 	- statistics on ratios and distributions for some key species, ut and bl concentration comparison, etc \
+	- nothing you really need unless youre interested in some of the chemical distributions \
+\
+
+\f0\b\fs26 \cf4 regional_plots
+\f1\b0\fs24 \cf0 \
+	- various map plots, flight footprint, vertical sampling altitudes \
+\
+
+\f0\b\fs26 \cf4 vertical_profiles
+\f1\b0\fs24 \cf0  \
+	- various vertical profiles for a few select trace gases \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b \cf3 ___________________________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs28 \cf2 Sample order of operations \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \ul \ulc0 Start to finish, basic outputs for one RF or for CAMPAIGN AVERAGE: \ulnone \
+1) contrast_readin - for both toga and awas, read in netcdfs \
+2) get_ratios - to get \'93master list\'94 data frames to be used, compute ratios per RF and for campaign average \
+3) get_tts - for whatever combination of lifetime and ratio you want to use (pick appropriate columns from master list) \
+\
+\
+\
+\
+}

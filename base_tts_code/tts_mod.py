@@ -67,6 +67,7 @@ def get_tts(utbl, tau, t, exp_decay_matrix, LT):
     else:
         mode_age = t[peaks[0]]/86400
     mean_age = np.trapz(my_gf*t, t)/86400
+    my_gf = my_gf*86400
     #return my_mustar, my_r2, my_gf, my_t, mean_age, mode_age
     return my_mustar, my_r2, my_gf, my_t, mean_age, mode_age, best_k
 
